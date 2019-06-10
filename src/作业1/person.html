@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+       Person('li');
+        // This is li
+        Person('li').sleep(10).eat('danner')
+        // This is li
+        // ...等待10ms
+        // sleep after 10
+        // eat danner
+        Person('li').sleepFirst(5000).eat('danner').sleep(3000).eat('food').sleep(3000).eat(123);
+        // ...等待5s
+        // sleep before 5000
+        // This is li
+        // eat dinner
+        // sleep after 3000
+        // eat food
+        // sleep after 3000
+        // eat 123
+        // ...等待5ms
+        // sleep before 5
+        // This is li
+        // eat danner
+        Person('li').eat('food').eat('danner')
+
+        function Person(name) {
+            var id = 0;
+            var operations = [()=>new Promise(resolve=>{console.log(`Hi! This is ${name}`);resolve();})];
+            var returnObj = {
+                sleep: function(period){
+                    id++;
+                    operations.push(()=>new Promise(resolve=>{
+                        setTimeout(()=>{
+                            console.log(` ${period}`);
+                            resolve();
+                        }, period * 1000);
+                    }));
+                    return returnObj.exec();
+                },
+                eat: function(what){
+                    id++;
+                    operations.push(()=>new Promise(resolve=>{console.log(`Eat ${what}~`);resolve();}));
+                    return returnObj.exec();
+                },
+                sleepFirst: function(period){
+                    id++;
+                    operations.splice(0, 0, ()=>new Promise(resolve=>{
+                        setTimeout(()=>{
+                            console.log(` ${period}`);
+                            resolve();
+                        }, period * 1000);
+                    }));
+                    return returnObj.exec();
+                },
+                exec: function(){
+                    ((prevId)=>{
+                        setTimeout(()=>{
+                            if(prevId === id){
+                                var opts = operations.slice();
+                                operations = [];
+                                opts.reduce((a,b)=>a.then(b), new Promise(resolve=>resolve()));
+                            }
+                        }, 10);
+                    })(id);
+                    return returnObj;
+                }
+            };
+            return returnObj.exec();
+    }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var that=this;
+        function MyPromise(fn){
+            this.status='pending';
+            this.resolveParams='';
+            this.rejectParams='';
+            this.init();
+            fn(this.resolve,this.reject);
+        }
+        MyPromise.prototype={
+            constructor:MyPromise,
+            init(){
+                that=MyPromise.prototype;
+            },
+            resolve(params){
+                that.resolveParams=params;
+                that.status='pending';
+            },
+            reject(params){
+                that.rejectParams=params;
+                that.status='pending';
+            },
+            then(_fn){
+                if(that.resolveParams && that.status == 'pending'){
+                    _fn(that.resolveParams);
+                    that.resolveParams='';
+                    that.status='resolved'
+                }
+                return new MyPromise(()=>{})
+            },
+            catch(_fn){
+                if(that.rejectParams && that.status =='pending'){
+                    _fn(that.rejectParams);
+                    that.resolveParams='';
+                    that.status='rejected'
+                }
+            }
+        }
+
+        function loadImage(status) {
+            return new MyPromise(function(resolve, reject){
+                var image = new Image();
+                if(status==200){
+                    image.src = 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1560085589&di=0e8de4a46f7c958df1b67be5e743349b&src=http://img.besoo.com/file/201809/11/nvbxk1x0oqq.jpg'
+                    resolve(image);
+                }else if (status==404) {
+                    reject(new Error('Could not load image at '+url))
+                }
+                
+            })
+        }
+        loadImage(200).then(res=>{
+            document.body.appendChild(res)
+        }).catch(err=>{
+            console.log(err)
+        })
+      
+    </script>
+</body>
+</html>
