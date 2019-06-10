@@ -14,7 +14,7 @@
      //测试writable,是否可写(可覆盖)   默认是false 
      Object.defineProperty(obj,'a',{
          writable:true
-     })
+     }) 
     //测试configurable,是否可被删除 // delete    默认是false 
     Object.defineProperty(obj,'a',{
         configurable:true
@@ -110,9 +110,36 @@ watchable.on('changed', () => {
 proxy.name = 'sss' //changed {name: "sss", age: 10} updated {name: "sss", age: 10}
 
 //**************
-//Promise的三种状态:pending就是未决，resolve可以理解为成功，reject可以理解为拒绝。
+//Promise的三种状态:padding(初始状态)，fulfilled(异步成功之后的状态)，rejected(异步失败的状态)
+//一种即异步的结果：如果成功状态由padding——>fulfilled；否则状态由padding——>rejected。无法提供其他方式改变状态。
+//状态一旦改变就无法更改。
+//无法取消Promise，一旦建立就会执行。。。
+//调用的时候再执行promise对象
   function loadImg(src){
-      return new Promise((resolve,reject)=>{
+            function MyPromise(){
+                this.status='pending';
+                this.msg='';
+                var process=arguments[0];
+                var that=this;
+                process(function(){
+                    that.status='resolve';
+                    that.msg=arguments[0];
+                },function(){
+                    that.status='reject';     
+                    that.msg=arguments[0];           
+                });
+                console.log(this)
+                return this;
+            }
+        MyPromise.prototype.then=function(){
+            if(this.status=='resolve'){
+                arguments[0](this.msg);
+            }
+            if(this.status=='reject'&&arguments[1]){
+                arguments[1](this.msg);
+            }
+        }
+      return new MyPromise((resolve,reject)=>{
           let img=new Image();
           img.src=src;
           img.onload=function(){
@@ -125,15 +152,42 @@ proxy.name = 'sss' //changed {name: "sss", age: 10} updated {name: "sss", age: 1
   }
   let url='https://avatar-static.segmentfault.com/194/808/1948081578-565bcd718b827_big64'
   loadImg(url).then(res=>{
-       document.body.appendChild(res)
-      console.log(res,"res")
+    document.body.appendChild(res)
   },err=>{
-      console.log(err,'err')
-  }).catch(res=>{      //用于指定发生错误时的回调函数
-      console.log(res,'catch')
-  }).finally(res=>{   //成功失败都会走
-       console.log(res,'finally')
+
   })
+
+  
+//   let url='https://avatar-static.segmentfault.com/194/808/1948081578-565bcd718b827_big64'
+//   loadImg(url).then(res=>{    //第一个参数代表resolve成功,第二个代表失败reject
+//        document.body.appendChild(res)
+//       console.log(res,"res")
+//   },err=>{
+//       console.log(err,'err')
+//   }).catch(res=>{      //用于指定发生错误时的回调函数
+//       console.log(res,'catch')
+//   }).finally(res=>{   //成功失败都会走
+//        console.log(res,'finally')
+//   })
+
+
+
+// var mm=new MyPromise(function(resolve,reject){
+//        if((1+1)==2){
+//           resolve("123")
+//        }else{
+//           reject("报错了")
+//        }
+// });
+
+
+// mm.then(function(success){
+//     console.log(success);
+//     console.log("ok!");
+// },function(){
+//     console.log('fail!');
+// })
+
      
     </script>
 </body>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+         let loadImg = (src) => {
+            return new Promise((resolve, reject) => {
+                let img = document.createElement('img')
+                img.src = src
+                document.body.append(img)
+                setTimeout(() => {
+                    resolve(true)
+                }, 1000)
+            })
+        }
+        const imgs = ['https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1560085589&di=0e8de4a46f7c958df1b67be5e743349b&src=http://img.besoo.com/file/201809/11/nvbxk1x0oqq.jpg', 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560095651669&di=3b534d6f15339f2821c27bacecd1da82&imgtype=0&src=http%3A%2F%2Fimage.biaobaiju.com%2Fuploads%2F20181223%2F19%2F1545566102-jUqaimHeuB.jpg', 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560095651666&di=4d193c1cd1a3f071b6a8e1364a3e777e&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F86bc6d5d28da5cfc5461effcc04b31ea281256e66f97-GHCT9Z_fw658','https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3846708800,174470876&fm=26&gp=0.jpg','https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3246515449,1102929724&fm=26&gp=0.jpg','https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=887884026,1974465504&fm=26&gp=0.jpg','https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=506916759,2680982413&fm=26&gp=0.jpg','https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=512446361,4058078888&fm=26&gp=0.jpg','https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3947098529,3666975233&fm=26&gp=0.jpg','https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3072357666,2706422801&fm=26&gp=0.jpg'];
+        // 依次加载图片
+        async function fSync(imgs) {
+            for (let i of imgs) {
+                await loadImg(i)
+            }
+        }
+        fSync(imgs);
+
+    </script>
+</body>
+</html>
